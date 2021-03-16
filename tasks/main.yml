@@ -1,0 +1,13 @@
+---
+- name: run tasks on inventory host
+  include_tasks: dhcp_reservation.yml
+  when: windows_dhcp_reservation_delegate_host is not defined
+
+- name: run tasks on delegated hosts
+  block:
+
+   - name: run tasks delegated
+     include_tasks: dhcp_reservation.yml
+
+  delegate_to: "{{ windows_dhcp_reservation_delegate_host }}"
+  when: windows_dhcp_reservation_delegate_host is defined

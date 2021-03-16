@@ -1,0 +1,48 @@
+---
+# tasks file for windows_dhcp_reservation
+
+- name: Ensure DHCP lease or reservation does not exist for macaddress
+  community.windows.win_dhcp_lease:
+    type: reservation
+    mac: "{{ windows_dhcp_reservation_mac | upper | replace(':','-') }}"
+    state: absent
+  when:
+    - windows_dhcp_reservation_force | bool
+    - windows_dhcp_reservation_mac is defined
+
+# Really really really try to remove the lease
+- name: Ensure DHCP lease or reservation does not exist for ipaddress
+  community.windows.win_dhcp_lease:
+    type: reservation
+    ip: "{{ windows_dhcp_reservation_ip }}"
+    state: absent
+  when:
+    - windows_dhcp_reservation_force | bool
+    - windows_dhcp_reservation_ip is defined
+
+# Really really really try to remove the lease
+- name: Ensure DHCP lease is removed
+  community.windows.win_dhcp_lease:
+    type: lease
+    state: absent
+    ip: "{{ windows_dhcp_reservation_ip }}"
+    scope_id: "{{ windows_dhcp_reservation_ip.split('.')[0:3] | join('.') }}.0"
+  when:
+    - windows_dhcp_reservation_force | bool
+    - windows_dhcp_reservation_ip is defined
+    - windows_dhcp_reservation_state is defined
+    - windows_dhcp_reservation_state == 'absent'
+
+- name: Ensure DHCP reservation exists
+  community.windows.win_dhcp_lease:
+    type: reservation
+    state: "{{ windows_dhcp_reservation_state | default('present') }}"
+    ip: "{{ windows_dhcp_reservation_ip }}"
+    scope_id: "{{ windows_dhcp_reservation_ip.split('.')[0:3] | join('.') }}.0"
+    mac: "{{ windows_dhcp_reservation_mac | upper | replace(':','-') }}"
+    dns_hostname: "{{ windows_dhcp_reservation_dns_hostname | default(ansible_fqdn) }}"
+    dns_regtype: "{{ windows_dhcp_reservation_dns_regtype | default('noreg') }}"
+    description: "{{ windows_dhcp_reservation_description | default(ansible_fqdn) | default(omit) }}"
+  when:
+    - windows_dhcp_reservation_ip is defined
+    - windows_dhcp_reservation_mac is defined

@@ -1,0 +1,12 @@
+dhcp1.ad.shakey.org
+
+[windows]
+dhcp1.ad.shakey.org
+
+[testservers]
+dhcp1.ad.shakey.org
+
+[testservers:vars]
+windows_dhcp_reservation_ip='192.168.42.13'
+windows_dhcp_reservation_mac='00:50:56:82:9e:9a'
+dns_hostname='win10.ad.shakey.org'

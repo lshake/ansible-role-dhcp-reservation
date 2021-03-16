@@ -1,0 +1,11 @@
+---
+ansible_user: ansible@ad.shakey.org
+ansible_connection: winrm
+ansible_winrm_server_cert_validation: ignore
+ansible_winrm_scheme: https
+ansible_port: 5986
+ansible_winrm_transport: credssp
+ansible_become_method: runas
+ansible_password: "{{ vault_ansible_password }}" # pragma: allowlist secret
+ansible_become_user: ansible@ad.shakey.org
+ansible_become_password: "{{ vault_ansible_password }}" # pragma: allowlist secret
